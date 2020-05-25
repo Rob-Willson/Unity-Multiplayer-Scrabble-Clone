@@ -1,10 +1,11 @@
 ﻿using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerScore))]
 public class Player : NetworkBehaviour
 {
+    private PlayerScore PlayerScore;
+
     [Client]
     private void Update()
     {
@@ -21,18 +22,31 @@ public class Player : NetworkBehaviour
 
     private void Start()
     {
-        
+        Initialize();
+    }
+
+    public void Initialize ()
+    {
+        PlayerScore = GetComponent<PlayerScore>();
+        if(PlayerScore == null)
+        {
+            Debug.LogError("FAIL: '" + this.GetType().ToString() + "' could not find required component: 'PlayerScore'");
+        }
     }
 
     [Command]
     private void CmdDealTile(int count)
     {
 
-
-
     }
 
+    [Command]
+    public void CmdAddToScore (int count)
+    {
+        // TODO: Validate...
+        // ...
 
-
+        PlayerScore.AddToScore(count);
+    }
 
 }
