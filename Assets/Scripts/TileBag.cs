@@ -100,8 +100,11 @@ public class TileBag : NetworkBehaviour
 
     private void Shuffle()
     {
-        tilesInBag.Shuffle();
         Debug.Log("Shuffling tile bag...");
+        tilesInBag.Shuffle();
+
+
+
     }
 
 }

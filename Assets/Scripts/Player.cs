@@ -16,7 +16,7 @@ public class Player : NetworkBehaviour
 
         if(Input.anyKeyDown)
         {
-            CmdDealTile(1);
+            CmdAddToScore(1);
         }
     }
 
@@ -46,7 +46,21 @@ public class Player : NetworkBehaviour
         // TODO: Validate...
         // ...
 
-        PlayerScore.AddToScore(count);
+        PlayerScore.AddToScore(this, count);
     }
+
+
+    //[ClientRpc]
+    //private void RpcUpdateScore ()
+    //{
+    //    if(Camera.main.backgroundColor == Color.yellow)
+    //    {
+    //        Camera.main.backgroundColor = Color.red;
+    //    }
+    //    else
+    //    {
+    //        Camera.main.backgroundColor = Color.yellow;
+    //    }
+    //}
 
 }
