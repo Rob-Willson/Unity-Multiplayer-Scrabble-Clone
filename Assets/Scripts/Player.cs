@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using System;
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerScore))]
@@ -16,6 +17,7 @@ public class Player : NetworkBehaviour
 
         if(Input.anyKeyDown)
         {
+            Debug.Log("Key pressed");
             CmdAddToScore(1);
         }
     }
@@ -45,7 +47,7 @@ public class Player : NetworkBehaviour
     {
         // TODO: Validate...
         // ...
-
+        Debug.Log("CmdAddToScore");
         PlayerScore.AddToScore(this, count);
     }
 

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1242137278548666957}
   - component: {fileID: 1242137278548666954}
   - component: {fileID: 1242137278548666955}
-  - component: {fileID: 1242137278548666952}
   - component: {fileID: 1242137278548666953}
+  - component: {fileID: 1242137278548666952}
   - component: {fileID: 7096974668989857573}
   m_Layer: 0
   m_Name: Player
@@ -82,20 +82,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &1242137278548666952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242137278548666966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d54c2b875c7ba6408c299264905dde5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
 --- !u!114 &1242137278548666953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,6 +98,20 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &1242137278548666952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242137278548666966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d54c2b875c7ba6408c299264905dde5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &7096974668989857573
 MonoBehaviour:
   m_ObjectHideFlags: 0
