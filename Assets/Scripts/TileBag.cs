@@ -5,22 +5,24 @@ using System;
 
 public class TileBag : NetworkBehaviour
 {
-    [SerializeField] private GameObject tileTemplate;
-    private List<UI_LetterTile> tilesInBag = new List<UI_LetterTile>();
+    [SerializeField] private Tile tileTemplate;
+    [SerializeField] private List<Tile> tilesInBag = new List<Tile>();
 
     private void Start()
     {
         GenerateAllLetterTiles();
-        Shuffle();
+        ShuffleTilesInBag();
+        DisplayAllTilesInBag();
     }
 
     public void Deal(int requiredTileCount)
     {
-        List<UI_LetterTile> tilesToDeal = new List<UI_LetterTile>();
+        ShuffleTilesInBag();
+        List<Tile> tilesToDeal = new List<Tile>();
 
         for(int i = 0; i < requiredTileCount; i++)
         {
-            if(GetTileFromBag(out UI_LetterTile tile))
+            if(GetTileFromBag(out Tile tile))
             {
                 tilesToDeal.Add(tile);
             }
@@ -32,7 +34,7 @@ public class TileBag : NetworkBehaviour
         }
     }
 
-    private bool GetTileFromBag(out UI_LetterTile tile)
+    private bool GetTileFromBag(out Tile tile)
     {
         if(tilesInBag.Count == 0)
         {
@@ -49,21 +51,16 @@ public class TileBag : NetworkBehaviour
     {
         var requiredLetterCounts = GetRequiredLetterCounts();
 
-
         foreach(var requireLetter in requiredLetterCounts)
         {
             for(int i = 0; i < requireLetter.Item2; i++)
             {
-                LetterTileData newLetterTileData = new LetterTileData(requireLetter.Item1);
-
-                GameObject obj = Instantiate(tileTemplate, this.transform);
-
-                UI_LetterTile newLetterTile = obj.GetComponent<UI_LetterTile>();
-                newLetterTile.Intialize(newLetterTileData);
-
+                TileData newTileData = new TileData(requireLetter.Item1);
+                Tile newTile = Instantiate(tileTemplate, this.transform) as Tile;
+                newTile.Intialize(newTileData);
+                tilesInBag.Add(newTile);
             }
         }
-
     }
 
     private List<Tuple<char, int>> GetRequiredLetterCounts()
@@ -98,12 +95,30 @@ public class TileBag : NetworkBehaviour
         return requiredLetterCounts;
     }
 
-    private void Shuffle()
+    private void ShuffleTilesInBag()
     {
         Debug.Log("Shuffling tile bag...");
         tilesInBag.Shuffle();
+    }
 
+    private void DisplayAllTilesInBag()
+    {
+        int tileCount = tilesInBag.Count;
+        int sqrtTileCount = Mathf.CeilToInt(Mathf.Sqrt(tileCount));
 
+        int i = 0;
+        for(int y = sqrtTileCount; y >= 0; y--)
+        {
+            for(int x = 0; x < sqrtTileCount; x++)
+            {
+                if(i >= tileCount)
+                {
+                    return;
+                }
+
+                tilesInBag[i++].transform.position = new Vector3(x - (sqrtTileCount / 2f), y - (sqrtTileCount / 2f));
+            }
+        }
 
     }
 

@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class LetterTileData
+[Serializable]
+public class TileData
 {
-    [SerializeField] private readonly char letter;
+    [SerializeField] private char letter;
     public char Letter
     {
         get
@@ -12,7 +14,7 @@ public class LetterTileData
             return letter;
         }
     }
-    [SerializeField] private readonly int value;
+    [SerializeField] private int value;
     public int Value
     {
         get
@@ -21,10 +23,10 @@ public class LetterTileData
         }
     }
 
-    public LetterTileData(char letter)
+    public TileData(char letter)
     {
         this.letter = letter;
-        value = new ConvertLetterToValue().GetValue(Letter);
+        value = new ConvertLetterToValue().GetValue(letter);
     }
 
 
