@@ -16,25 +16,15 @@ public class PlayerScore : NetworkBehaviour, IReset
         scoreLog.Clear();
     }
 
+    [Server]
     public void AddToScore (Player myPlayer, int amount)
     {
+        Debug.Log("PlayerScore.AddToScore");
+
         score += amount;
         scoreLog.Add(amount);
 
         PlayerScoreChange?.Invoke(myPlayer, score);
-        //RpcUpdateScore();
     }
 
-    //[ClientRpc]
-    //private void RpcUpdateScore ()
-    //{
-    //    if(Camera.main.backgroundColor == Color.yellow)
-    //    {
-    //        Camera.main.backgroundColor = Color.red;
-    //    }
-    //    else
-    //    {
-    //        Camera.main.backgroundColor = Color.yellow;
-    //    }
-    //}
 }

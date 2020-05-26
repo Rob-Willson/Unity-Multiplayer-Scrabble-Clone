@@ -22,16 +22,13 @@ public class UI_PlayerScores : NetworkBehaviour
     {
         Debug.Log("Updating score of player: ... ");
 
-
         RpcUpdatePlayerScore(0, newScore);
     }
-
 
     [ClientRpc]
     private void RpcUpdatePlayerScore (int playerIndex, int newScore)
     {
         allPlayerScoreTexts[playerIndex].SetText("Player X: " + newScore);
-
 
         if(Camera.main.backgroundColor == Color.yellow)
         {
