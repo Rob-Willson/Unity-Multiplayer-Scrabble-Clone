@@ -3,7 +3,7 @@ using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerScore))]
-public class Player : NetworkBehaviour
+public class PlayerInstance : NetworkBehaviour
 {
     private PlayerScore PlayerScore;
 
@@ -50,19 +50,5 @@ public class Player : NetworkBehaviour
         Debug.Log("CmdAddToScore");
         PlayerScore.AddToScore(this, count);
     }
-
-
-    //[ClientRpc]
-    //private void RpcUpdateScore ()
-    //{
-    //    if(Camera.main.backgroundColor == Color.yellow)
-    //    {
-    //        Camera.main.backgroundColor = Color.red;
-    //    }
-    //    else
-    //    {
-    //        Camera.main.backgroundColor = Color.yellow;
-    //    }
-    //}
 
 }
