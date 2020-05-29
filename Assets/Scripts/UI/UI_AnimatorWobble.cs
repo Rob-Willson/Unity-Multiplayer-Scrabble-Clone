@@ -6,6 +6,7 @@ public class UI_AnimatorWobble : MonoBehaviour, IUserInterfaceInteractionCompani
     public enum WobbleType { None, Start, Stop }
     public RectTransform targetRect;
     [Space]
+    public WobbleType wobbleOnEnable = WobbleType.None;
     public WobbleType wobbleOnHover = WobbleType.Start;
     public WobbleType wobbleOnPressed = WobbleType.None;
     public WobbleType wobbleOnSelect = WobbleType.None;
@@ -23,8 +24,13 @@ public class UI_AnimatorWobble : MonoBehaviour, IUserInterfaceInteractionCompani
             Debug.LogError("Unassigned element in inspector: '" + this.transform.name + "'");
         }
         startingRotation = targetRect.localRotation;
+
     }
 
+    private void OnEnable()
+    {
+        TransitionAccordingToComponentSettings(wobbleOnEnable);
+    }
     public void OnHover ()
     {
         TransitionAccordingToComponentSettings(wobbleOnHover);
