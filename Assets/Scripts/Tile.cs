@@ -24,21 +24,26 @@ public class Tile : NetworkBehaviour
     [SerializeField] public TextMeshProUGUI letterText;
     [SerializeField] private TextMeshProUGUI valueText;
 
-    [Server]
     public void Intialize(TileData tileData)
     {
         this.tileData = tileData;
-        SetTileText();
+        RpcSetTileText();
         gameObject.name = "Tile " + tileData.Letter;
     }
 
-    [Server]
-    private void SetTileText()
+    [ClientRpc]
+    public void RpcSetTileText()
     {
         if(!IsInitialized)
         {
             Debug.LogError("FAIL: Trying to set tile text before it was initialized correctly.");
         }
+        else
+        {
+            Debug.Log("RpcSetTileText");
+        }
+
+        //Debug.Log("  " + tileData.Letter);
 
         letterText.SetText(tileData.Letter.ToString());
         valueText.SetText(tileData.Value.ToString());
@@ -48,7 +53,8 @@ public class Tile : NetworkBehaviour
     {
         get
         {
-            return (tileData != null);
+            return true;
+            //return (tileData != null);
         }
     }
 

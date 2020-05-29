@@ -18,7 +18,7 @@ public class UI_PlayerScores : NetworkBehaviour
         PlayerScore.PlayerScoreChange -= UpdatePlayerScore;
     }
 
-    private void UpdatePlayerScore (Player player, int newScore)
+    private void UpdatePlayerScore (PlayerInstance player, int newScore)
     {
         Debug.Log("Updating score of player: ... ");
 

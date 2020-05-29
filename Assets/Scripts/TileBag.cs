@@ -5,14 +5,40 @@ using System;
 
 public class TileBag : NetworkBehaviour
 {
-    [SerializeField] private Tile tileTemplate;
+    public static TileBag instance = null;
+
+    private void Awake()
+    {
+        if(instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
     [SerializeField] private List<Tile> tilesInBag = new List<Tile>();
 
-    private void Start()
+    private void OnEnable()
     {
+        //NetworkManagerJumble.ClientJoinedServer += GetAllTiles;
+    }
+
+    private void OnDisable()
+    {
+        //NetworkManagerJumble.ClientJoinedServer -= GetAllTiles;
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        Debug.Log("OnStartServer");
+
         GenerateAllLetterTiles();
         ShuffleTilesInBag();
-        DisplayAllTilesInBag();
     }
 
     public void Deal(int requiredTileCount)
@@ -50,17 +76,37 @@ public class TileBag : NetworkBehaviour
     private void GenerateAllLetterTiles()
     {
         var requiredLetterCounts = GetRequiredLetterCounts();
+        GameObject objPrefab = NetworkManagerJumble.instance.FindRegisteredPrefabByName("Tile");
+
+        if(objPrefab == null)
+        {
+            Debug.LogError("FAIL: Couldn't find prefab of name 'Tile'. Missing registered prefab?");
+            return;
+        }
 
         foreach(var requireLetter in requiredLetterCounts)
         {
             for(int i = 0; i < requireLetter.Item2; i++)
             {
-                TileData newTileData = new TileData(requireLetter.Item1);
-                Tile newTile = Instantiate(tileTemplate, this.transform) as Tile;
-                newTile.Intialize(newTileData);
+                TileData tileData = new TileData();
+                tileData.Letter = requireLetter.Item1;
+                tileData.Value = 5;
+
+                GameObject spawnedObj = Instantiate(objPrefab, this.transform);
+                NetworkServer.Spawn(spawnedObj);
+
+                Tile newTile = spawnedObj.GetComponent<Tile>();
+                newTile.Intialize(tileData);
+
                 tilesInBag.Add(newTile);
             }
         }
+    }
+
+    [ClientRpc]
+    public void RpcMessageString_TEST(string msg)
+    {
+        Debug.Log("RPC TEST: " + msg);
     }
 
     private List<Tuple<char, int>> GetRequiredLetterCounts()
@@ -95,13 +141,37 @@ public class TileBag : NetworkBehaviour
         return requiredLetterCounts;
     }
 
-    private void ShuffleTilesInBag()
+    [Command]
+    public void CmdRequestShuffleTilesInBag ()
     {
-        Debug.Log("Shuffling tile bag...");
-        tilesInBag.Shuffle();
+        Debug.Log("Request shuffle tiles in bag");
+        ShuffleTilesInBag();
     }
 
-    private void DisplayAllTilesInBag()
+    [Server]
+    public void ShuffleTilesInBag()
+    {
+        Debug.Log("Shuffling tile bag... SERVER");
+        tilesInBag.Shuffle();
+
+        foreach(var tile in tilesInBag)
+        {
+            tile.RpcSetTileText();
+            RpcDisplayAllTilesInBag();
+        }
+
+        RpcMessageString_TEST(" dfsfsdfs ");
+
+    }
+
+    [Client]
+    public void DisplayTiles ()
+    {
+        RpcDisplayAllTilesInBag();
+    }
+
+    [ClientRpc]
+    private void RpcDisplayAllTilesInBag()
     {
         int tileCount = tilesInBag.Count;
         int sqrtTileCount = Mathf.CeilToInt(Mathf.Sqrt(tileCount));

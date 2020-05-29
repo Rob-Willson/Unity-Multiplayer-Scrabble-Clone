@@ -5,7 +5,7 @@ using Mirror;
 
 public class PlayerScore : NetworkBehaviour, IReset
 {
-    public static Action<Player, int> PlayerScoreChange;
+    public static Action<PlayerInstance, int> PlayerScoreChange;
 
     [SerializeField] private int score;
     [SerializeField] private List<int> scoreLog;
@@ -17,7 +17,7 @@ public class PlayerScore : NetworkBehaviour, IReset
     }
 
     [Server]
-    public void AddToScore (Player myPlayer, int amount)
+    public void AddToScore (PlayerInstance myPlayer, int amount)
     {
         Debug.Log("PlayerScore.AddToScore");
 

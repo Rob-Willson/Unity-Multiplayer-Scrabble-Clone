@@ -32,5 +32,12 @@ public class NetworkManagerJumble : NetworkManager
         ClientJoinedServer?.Invoke();
     }
 
+    // HACK: Not a big fan of the use of magic strings here
+    // Consider a cleaner alternative...
+    public GameObject FindRegisteredPrefabByName (string name)
+    {
+        GameObject prefabObj = spawnPrefabs.Find(prefab => prefab.name == name);
+        return prefabObj;
+    }
 
 }
