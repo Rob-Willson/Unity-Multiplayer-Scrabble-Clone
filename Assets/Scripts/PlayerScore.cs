@@ -3,28 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class PlayerScore : NetworkBehaviour, IReset
+public class PlayerScore : NetworkBehaviour
 {
-    public static Action<PlayerInstance, int> PlayerScoreChange;
+    public static Action PlayerScoreChange;
 
-    [SerializeField] private int score;
-    [SerializeField] private List<int> scoreLog;
-
-    public void Reset ()
-    {
-        score = 0;
-        scoreLog.Clear();
-    }
+    [SyncVar(hook = nameof(NotifyOfScoreChange))]
+    [SerializeField] public int score;
+    [SerializeField] private List<int> scoreLog = new List<int>();
 
     [Server]
-    public void AddToScore (PlayerInstance myPlayer, int amount)
+    public void AddToScore (int amount)
     {
         Debug.Log("PlayerScore.AddToScore");
+        if(amount == 0)
+        {
+            return;
+        }
 
-        score += amount;
         scoreLog.Add(amount);
+        score += amount;
+    }
 
-        PlayerScoreChange?.Invoke(myPlayer, score);
+    private void NotifyOfScoreChange (int oldScore, int newScore)
+    {
+        Debug.Log("SCORE CHANGED...");
+        PlayerScoreChange?.Invoke();
     }
 
 }

@@ -3,9 +3,34 @@ using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerScore))]
+[RequireComponent(typeof(PlayerScreenName))]
 public class PlayerInstance : NetworkBehaviour
 {
-    private PlayerScore PlayerScore;
+    private PlayerScore score;
+    public PlayerScore Score
+    {
+        get
+        {
+            if(score == null)
+            {
+                score = GetComponent<PlayerScore>();
+            }
+            return score;
+        }
+    }
+
+    private PlayerScreenName screenName;
+    public PlayerScreenName ScreenName
+    {
+        get
+        {
+            if(screenName == null)
+            {
+                screenName = GetComponent<PlayerScreenName>();
+            }
+            return screenName;
+        }
+    }
 
     [Client]
     private void Update()
@@ -17,7 +42,6 @@ public class PlayerInstance : NetworkBehaviour
 
         if(Input.anyKeyDown)
         {
-            Debug.Log("Key pressed");
             CmdAddToScore(1);
         }
     }
@@ -27,17 +51,19 @@ public class PlayerInstance : NetworkBehaviour
         Initialize();
     }
 
-    public void Initialize ()
+    public override void OnStartAuthority()
     {
-        PlayerScore = GetComponent<PlayerScore>();
-        if(PlayerScore == null)
+        base.OnStartAuthority();
+
+        if(!hasAuthority)
         {
-            Debug.LogError("FAIL: '" + this.GetType().ToString() + "' could not find required component: 'PlayerScore'");
+            return;
         }
+
+        Initialize();
     }
 
-    [Command]
-    private void CmdDealTile(int count)
+    public void Initialize ()
     {
 
     }
@@ -47,8 +73,26 @@ public class PlayerInstance : NetworkBehaviour
     {
         // TODO: Validate...
         // ...
-        Debug.Log("CmdAddToScore");
-        PlayerScore.AddToScore(this, count);
+        Debug.Log("CmdAddToScore"); 
+        Score.AddToScore(count);
+    }
+
+    [Command]
+    public void CmdRequestTileBagShuffle ()
+    {
+        Debug.Log("CmdRequestTileBagShuffle");
+        RequestTileBagShuffle();
+    }
+
+    [Server]
+    public void RequestTileBagShuffle()
+    {
+        Debug.Log("RequestTileBagShuffle");
+        // TODO: Validate...
+        // ...
+
+        TileBag tileBag = FindObjectOfType<TileBag>();
+        tileBag.ShuffleTilesInBag();
     }
 
 }

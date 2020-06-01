@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Mirror;
@@ -11,32 +9,37 @@ public class UI_PlayerScores : NetworkBehaviour
 
     private void OnEnable()
     {
-        PlayerScore.PlayerScoreChange += UpdatePlayerScore;
+        NetworkManagerJumble.ClientJoinedServer += UpdatePlayerScores;
+        PlayerScore.PlayerScoreChange += UpdatePlayerScores;
     }
     private void OnDisable()
     {
-        PlayerScore.PlayerScoreChange -= UpdatePlayerScore;
+        NetworkManagerJumble.ClientJoinedServer += UpdatePlayerScores;
+        PlayerScore.PlayerScoreChange -= UpdatePlayerScores;
     }
 
-    private void UpdatePlayerScore (PlayerInstance player, int newScore)
+    private void UpdatePlayerScores ()
     {
-        Debug.Log("Updating score of player: ... ");
+        Debug.Log("UpdatePlayerScores() with " + PlayerManager.instance.allConnectedPlayers.Count + " connected players");
 
-        RpcUpdatePlayerScore(0, newScore);
-    }
-
-    [ClientRpc]
-    private void RpcUpdatePlayerScore (int playerIndex, int newScore)
-    {
-        allPlayerScoreTexts[playerIndex].SetText("Player X: " + newScore);
-
-        if(Camera.main.backgroundColor == Color.yellow)
+        for(int i = 0; i < allPlayerScoreTexts.Count; i++)
         {
-            Camera.main.backgroundColor = Color.red;
-        }
-        else
-        {
-            Camera.main.backgroundColor = Color.yellow;
+            if(i >= PlayerManager.instance.allConnectedPlayers.Count)
+            {
+                allPlayerScoreTexts[i].gameObject.SetActive(false);
+                continue;
+            }
+
+            PlayerInstance playerInstance = PlayerManager.instance.allConnectedPlayers[i];
+            if(playerInstance == null)
+            {
+                Debug.Log("PlayerInstance could not be found on connection. Bug?"); 
+                allPlayerScoreTexts[i].gameObject.SetActive(false);
+                continue;
+            }
+
+            allPlayerScoreTexts[i].SetText(playerInstance.ScreenName.screenName + "[" + i + "]: " + playerInstance.Score.score);
+            allPlayerScoreTexts[i].gameObject.SetActive(true);
         }
     }
 
