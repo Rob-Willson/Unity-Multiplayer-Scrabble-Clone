@@ -2,11 +2,13 @@
 using UnityEngine;
 using Mirror;
 
+[RequireComponent(typeof(PlayerManager))]
 public class NetworkManagerJumble : NetworkManager
 {
     public static NetworkManagerJumble instance = null;
 
     public static Action ClientJoinedServer;
+    public static Action ClientLeftServer;
 
     public override void Awake()
     {
@@ -21,15 +23,42 @@ public class NetworkManagerJumble : NetworkManager
         }
     }
 
-    [SerializeField] private int minimumPlayerCount = 2;
-
-
-    public override void OnClientConnect(NetworkConnection conn)
+    public override void OnServerAddPlayer(NetworkConnection connection)
     {
-        base.OnClientConnect(conn);
+        base.OnServerAddPlayer(connection);
 
-        Debug.Log("OnClientConnect");
+        Debug.Log("OnServerAddPlayer: " + connection.identity);
+
+        PlayerManager.instance.PromptClientGetAllExistingPlayerInstances();
+    }
+
+    public override void OnClientConnect(NetworkConnection connection)
+    {
+        base.OnClientConnect(connection);
+
+        Debug.Log("OnClientConnect: " + connection.identity);
         ClientJoinedServer?.Invoke();
+    }
+
+    public override void OnServerReady(NetworkConnection connection)
+    {
+        base.OnServerReady(connection);
+
+        Debug.Log("OnServerReady: " + connection.identity);
+
+
+        PlayerManager.instance.PromptClientGetAllExistingPlayerInstances();
+
+
+        ClientJoinedServer?.Invoke();
+    }
+
+    public override void OnServerDisconnect(NetworkConnection connection)
+    {
+        base.OnServerDisconnect(connection);
+
+        Debug.Log("OnServerDisconnect: " + connection.identity);
+        ClientLeftServer?.Invoke();
     }
 
     // HACK: Not a big fan of the use of magic strings here

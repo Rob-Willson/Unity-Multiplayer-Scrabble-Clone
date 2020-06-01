@@ -38,7 +38,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -105, y: -147.9}
+  m_AnchoredPosition: {x: -105, y: -147.90039}
   m_SizeDelta: {x: 200, y: 285.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6917538393722632312
@@ -64,6 +64,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -104,6 +105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetRect: {fileID: 1333229041639778418}
+  wobbleOnEnable: 0
   wobbleOnHover: 2
   wobbleOnPressed: 1
   wobbleOnSelect: 0
@@ -123,7 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates:
-  - eventID: 4
+  - eventID: 2
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -150,6 +152,7 @@ GameObject:
   - component: {fileID: 4514223708970630962}
   - component: {fileID: 6401902728863944738}
   - component: {fileID: 7730631474568639658}
+  - component: {fileID: 453007999}
   m_Layer: 5
   m_Name: Canvas Game Buttons
   m_TagString: Untagged
@@ -237,6 +240,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &453007999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5486507522738236406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978f76d9bf9952148b4383bfb6982cc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!1 &6425264906985787438
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,6 +314,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
