@@ -21,16 +21,6 @@ public class TileBag : NetworkBehaviour
 
     [SerializeField] private List<Tile> tilesInBag = new List<Tile>();
 
-    private void OnEnable()
-    {
-        //NetworkManagerJumble.ClientJoinedServer += GetAllTiles;
-    }
-
-    private void OnDisable()
-    {
-        //NetworkManagerJumble.ClientJoinedServer -= GetAllTiles;
-    }
-
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -41,24 +31,33 @@ public class TileBag : NetworkBehaviour
         ShuffleTilesInBag();
     }
 
-    public void Deal(int requiredTileCount)
+    [Client]
+    public override void OnStartClient()
     {
-        ShuffleTilesInBag();
-        List<Tile> tilesToDeal = new List<Tile>();
+        base.OnStartClient();
 
-        for(int i = 0; i < requiredTileCount; i++)
-        {
-            if(GetTileFromBag(out Tile tile))
-            {
-                tilesToDeal.Add(tile);
-            }
-            else
-            {
-                Debug.Log("No more tiles in bag");
-                continue;
-            }
-        }
+        Debug.Log("OnStartClient");
+        CmdDisplayTiles();
     }
+
+    //public void Deal(int requiredTileCount)
+    //{
+    //    ShuffleTilesInBag();
+    //    List<Tile> tilesToDeal = new List<Tile>();
+
+    //    for(int i = 0; i < requiredTileCount; i++)
+    //    {
+    //        if(GetTileFromBag(out Tile tile))
+    //        {
+    //            tilesToDeal.Add(tile);
+    //        }
+    //        else
+    //        {
+    //            Debug.Log("No more tiles in bag");
+    //            continue;
+    //        }
+    //    }
+    //}
 
     private bool GetTileFromBag(out Tile tile)
     {
@@ -73,6 +72,7 @@ public class TileBag : NetworkBehaviour
         return true;
     }
 
+    [Server]
     private void GenerateAllLetterTiles()
     {
         var requiredLetterCounts = GetRequiredLetterCounts();
@@ -88,25 +88,16 @@ public class TileBag : NetworkBehaviour
         {
             for(int i = 0; i < requireLetter.Item2; i++)
             {
-                TileData tileData = new TileData();
-                tileData.Letter = requireLetter.Item1;
-                tileData.Value = 5;
-
                 GameObject spawnedObj = Instantiate(objPrefab, this.transform);
                 NetworkServer.Spawn(spawnedObj);
-
                 Tile newTile = spawnedObj.GetComponent<Tile>();
+
+                TileData tileData = new TileData(requireLetter.Item1);
                 newTile.Intialize(tileData);
 
                 tilesInBag.Add(newTile);
             }
         }
-    }
-
-    [ClientRpc]
-    public void RpcMessageString_TEST(string msg)
-    {
-        Debug.Log("RPC TEST: " + msg);
     }
 
     private List<Tuple<char, int>> GetRequiredLetterCounts()
@@ -148,7 +139,6 @@ public class TileBag : NetworkBehaviour
         ShuffleTilesInBag();
     }
 
-    [Server]
     public void ShuffleTilesInBag()
     {
         Debug.Log("Shuffling tile bag... SERVER");
@@ -157,15 +147,13 @@ public class TileBag : NetworkBehaviour
         foreach(var tile in tilesInBag)
         {
             tile.RpcSetTileText();
-            RpcDisplayAllTilesInBag();
         }
 
-        RpcMessageString_TEST(" dfsfsdfs ");
-
+        RpcDisplayAllTilesInBag();
     }
 
-    [Client]
-    public void DisplayTiles ()
+    [Command]
+    public void CmdDisplayTiles ()
     {
         RpcDisplayAllTilesInBag();
     }
@@ -177,7 +165,7 @@ public class TileBag : NetworkBehaviour
         int sqrtTileCount = Mathf.CeilToInt(Mathf.Sqrt(tileCount));
 
         int i = 0;
-        for(int y = sqrtTileCount; y >= 0; y--)
+        for(int z = sqrtTileCount; z >= 0; z--)
         {
             for(int x = 0; x < sqrtTileCount; x++)
             {
@@ -186,7 +174,7 @@ public class TileBag : NetworkBehaviour
                     return;
                 }
 
-                tilesInBag[i++].transform.position = new Vector3(x - (sqrtTileCount / 2f), y - (sqrtTileCount / 2f));
+                tilesInBag[i++].transform.position = new Vector3(x - (sqrtTileCount / 2f), 0f, z - (sqrtTileCount / 2f));
             }
         }
 

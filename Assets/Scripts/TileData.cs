@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 
 [Serializable]
 public class TileData
 {
-    public char Letter;
-    public int Value;
+    [SerializeField] public char letter;
+    [SerializeField] public int value;
 
-    //public TileData(char letter)
-    //{
-    //    this.Letter = letter;
-    //    Value = 3; // new ConvertLetterToValue().GetValue(letter);
-    //}
+    public TileData()
+    {
+
+    }
+
+    public TileData(char letter)
+    {
+        this.letter = letter;
+        value = new ConvertLetterToValue().GetValue(letter);
+    }
+    
 }
 
 
