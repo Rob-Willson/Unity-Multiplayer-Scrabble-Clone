@@ -9,7 +9,7 @@ public class UI_RegexOnInput : MonoBehaviour
 {
     public enum RegexType { None, ScreenName, IPAddress };
     [SerializeField] private RegexType regexType = RegexType.None;
-    [SerializeField] private TMP_InputField targetServerIPInputField;
+    [SerializeField] private TMP_InputField targetServerIPInputField = null;
 
     private void OnEnable()
     {

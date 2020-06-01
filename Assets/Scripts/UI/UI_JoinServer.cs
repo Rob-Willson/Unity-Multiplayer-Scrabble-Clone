@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 public class UI_JoinServer : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField targetServerIPInputField;
+    [SerializeField] private TMP_InputField targetServerIPInputField = null;
 
     /// <summary>
     /// Only to be called from UI event trigger.
