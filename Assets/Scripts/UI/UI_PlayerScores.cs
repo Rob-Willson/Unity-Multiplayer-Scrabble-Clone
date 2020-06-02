@@ -20,7 +20,7 @@ public class UI_PlayerScores : NetworkBehaviour
 
     private void UpdatePlayerScores ()
     {
-        Debug.Log("UpdatePlayerScores() with " + PlayerManager.instance.allConnectedPlayers.Count + " connected players");
+        //Debug.Log("UpdatePlayerScores() with " + PlayerManager.instance.allConnectedPlayers.Count + " connected players");
 
         for(int i = 0; i < allPlayerScoreTexts.Count; i++)
         {

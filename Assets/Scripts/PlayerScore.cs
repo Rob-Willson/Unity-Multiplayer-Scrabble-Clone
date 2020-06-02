@@ -26,7 +26,6 @@ public class PlayerScore : NetworkBehaviour
 
     private void NotifyOfScoreChange (int oldScore, int newScore)
     {
-        Debug.Log("SCORE CHANGED...");
         PlayerScoreChange?.Invoke();
     }
 

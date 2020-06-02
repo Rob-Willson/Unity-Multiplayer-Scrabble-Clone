@@ -95,4 +95,22 @@ public class PlayerInstance : NetworkBehaviour
         tileBag.ShuffleTilesInBag();
     }
 
+    [Command]
+    public void CmdRequestTileSelect (NetworkIdentity tileIdentity, NetworkIdentity callingPlayer)
+    {
+        //Debug.Log("CmdRequestTileSelect");
+        // TODO: Validate...
+        // ...
+
+        Tile tile = tileIdentity.GetComponent<Tile>();
+        if(tile == null)
+        {
+            Debug.LogError("No Tile component found on tileIdentity. Bug?");
+            return;
+        }
+
+        tile.Select(callingPlayer.connectionToClient);
+
+    }
+
 }
