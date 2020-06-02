@@ -88,6 +88,10 @@ public class PlayerManager : NetworkBehaviour
                 Debug.Log("localPlayer");
                 return player;
             }
+            if(player.isClient)
+            {
+                Debug.Log("client");
+            }
         }
         return null;
     }
