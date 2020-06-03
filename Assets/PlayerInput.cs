@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Mirror;
 
 public class PlayerInput : NetworkBehaviour
 {
+    public static Action<Vector3> TileDragOngoing;
+    public static Action TileDragEnd;
+
     private Camera mainCamera = null;
     private Camera MainCamera
     {
@@ -47,22 +51,43 @@ public class PlayerInput : NetworkBehaviour
 
             if(hasTile)
             {
+                Debug.LogError("Already had tile picked up but trying to mouse down. Why wasn't tile dropped?");
+                return;
+            }
+
+            if(Physics.Raycast(MainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 100))
+            {
+                Tile hitTile = hit.collider.gameObject.GetComponent<Tile>();
+                if(hitTile == null)
+                {
+                    return;
+                }
+                CmdPickUpTile(hitTile.netIdentity);
+            }
+
+        }
+
+        if(Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            if(hasTile)
+            {
                 RequestDropTile();
             }
-            else
-            {
-                if(Physics.Raycast(MainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 100))
-                {
-                    Tile hitTile = hit.collider.gameObject.GetComponent<Tile>();
-                    if(hitTile == null)
-                    {
-                        return;
-                    }
-                    CmdPickUpTile(hitTile.netIdentity);
-                }
-            }
         }
+
+        if(Input.GetKey(KeyCode.Mouse0))
+        {
+            if(!hasTile)
+            {
+                return;
+            }
+
+            Vector3 mousePositionInWorld = GetMouseWorldCoordinate();
+            TileDragOngoing?.Invoke(mousePositionInWorld);
+        }
+
     }
+
 
     [Command]
     private void CmdPickUpTile (NetworkIdentity tileNetworkIdentity)
@@ -116,6 +141,7 @@ public class PlayerInput : NetworkBehaviour
     private void TargetDoDropTile(NetworkConnection connectionToTargetClient)
     {
         currentlySelectedTile = null;
+        TileDragEnd?.Invoke();
     }
 
     /// <summary>
