@@ -12,15 +12,6 @@ public class UI_HostServer : MonoBehaviour
     public void UICallback_HostButtonPressed ()
     {
         NetworkManagerJumble.instance.StartHost();
-
-
-        string ip = GetLocalIPv4();
-        Debug.Log("IP: " + ip);
     }
-
-     public string GetLocalIPv4()
-     {
-         return Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
-     }    
 
 }
