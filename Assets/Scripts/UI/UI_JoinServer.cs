@@ -14,6 +14,7 @@ public class UI_JoinServer : MonoBehaviour
         string targetAddress = targetServerIPInputField.text;
         if(ValidateNetworkAddress(ref targetAddress))
         {
+            Debug.Log("Trying to connecting to address: " + targetAddress);
             NetworkManagerJumble.instance.StartClient();
             NetworkManagerJumble.instance.networkAddress = targetAddress;
         }
