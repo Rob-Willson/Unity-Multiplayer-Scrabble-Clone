@@ -14,7 +14,6 @@ public class PlayerScore : NetworkBehaviour
     [Server]
     public void AddToScore (int amount)
     {
-        Debug.Log("PlayerScore.AddToScore");
         if(amount == 0)
         {
             return;

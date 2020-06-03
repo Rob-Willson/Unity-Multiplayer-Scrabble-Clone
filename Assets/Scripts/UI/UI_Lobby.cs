@@ -16,10 +16,8 @@ public class UI_Lobby : MonoBehaviour
         NetworkManagerJumble.ClientJoinedServer -= Hide;
     }
 
-    private void Hide()
+    private void Hide(NetworkIdentity joiningClientPlayerIdentity)
     {
-        Debug.Log("Called: UI_Lobby.Hide()");
-
         UI_AnimatorCanvasFader canvasFader = GetComponent<UI_AnimatorCanvasFader>();
         if(canvasFader != null)
         {

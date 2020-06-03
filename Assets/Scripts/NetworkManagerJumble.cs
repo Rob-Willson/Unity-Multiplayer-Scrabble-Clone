@@ -7,7 +7,7 @@ public class NetworkManagerJumble : NetworkManager
 {
     public static NetworkManagerJumble instance = null;
 
-    public static Action ClientJoinedServer;
+    public static Action<NetworkIdentity> ClientJoinedServer;
     public static Action ClientLeftServer;
 
     public override void Awake()
@@ -28,7 +28,6 @@ public class NetworkManagerJumble : NetworkManager
         base.OnServerAddPlayer(connection);
 
         Debug.Log("OnServerAddPlayer: " + connection.identity);
-
         PlayerManager.instance.PromptClientGetAllExistingPlayerInstances();
     }
 
@@ -37,20 +36,7 @@ public class NetworkManagerJumble : NetworkManager
         base.OnClientConnect(connection);
 
         Debug.Log("OnClientConnect: " + connection.identity);
-        ClientJoinedServer?.Invoke();
-    }
-
-    public override void OnServerReady(NetworkConnection connection)
-    {
-        base.OnServerReady(connection);
-
-        Debug.Log("OnServerReady: " + connection.identity);
-
-
-        PlayerManager.instance.PromptClientGetAllExistingPlayerInstances();
-
-
-        ClientJoinedServer?.Invoke();
+        ClientJoinedServer?.Invoke(connection.identity);
     }
 
     public override void OnServerDisconnect(NetworkConnection connection)

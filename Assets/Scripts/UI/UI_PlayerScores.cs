@@ -5,7 +5,7 @@ using Mirror;
 
 public class UI_PlayerScores : NetworkBehaviour
 {
-    public List<TextMeshProUGUI> allPlayerScoreTexts = new List<TextMeshProUGUI>();
+    [SerializeField] private List<TextMeshProUGUI> allPlayerScoreTexts = new List<TextMeshProUGUI>();
 
     private void OnEnable()
     {
@@ -14,14 +14,17 @@ public class UI_PlayerScores : NetworkBehaviour
     }
     private void OnDisable()
     {
-        NetworkManagerJumble.ClientJoinedServer += UpdatePlayerScores;
+        NetworkManagerJumble.ClientJoinedServer -= UpdatePlayerScores;
         PlayerScore.PlayerScoreChange -= UpdatePlayerScores;
     }
 
-    private void UpdatePlayerScores ()
+    private void UpdatePlayerScores(NetworkIdentity joiningClientPlayerIdentity)
     {
-        //Debug.Log("UpdatePlayerScores() with " + PlayerManager.instance.allConnectedPlayers.Count + " connected players");
+        UpdatePlayerScores();
+    }
 
+    private void UpdatePlayerScores()
+    {
         for(int i = 0; i < allPlayerScoreTexts.Count; i++)
         {
             if(i >= PlayerManager.instance.allConnectedPlayers.Count)
@@ -33,7 +36,7 @@ public class UI_PlayerScores : NetworkBehaviour
             PlayerInstance playerInstance = PlayerManager.instance.allConnectedPlayers[i];
             if(playerInstance == null)
             {
-                Debug.Log("PlayerInstance could not be found on connection. Bug?"); 
+                Debug.Log("PlayerInstance could not be found on connection. Bug?");
                 allPlayerScoreTexts[i].gameObject.SetActive(false);
                 continue;
             }

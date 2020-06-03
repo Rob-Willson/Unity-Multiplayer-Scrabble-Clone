@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using Mirror;
 
@@ -30,28 +27,10 @@ public class UI_PlayerScreenName : MonoBehaviour
         screenName = newScreenName;
     }
 
-    public void NotifyServerOfPlayerScreenName()
+    public void NotifyServerOfPlayerScreenName(NetworkIdentity joiningClientPlayerIdentity)
     {
-        PlayerInstance localPlayerInstance = PlayerManager.instance.GetLocalPlayerInstance();
-        if(localPlayerInstance == null)
-        {
-            Debug.LogError("FAIL: No local PlayerInstance found.");
-
-            //StartCoroutine(QueueUpScreenNameChangeReminder());
-
-            return;
-        }
-
-        Debug.Log("LOCAL PLAYER INSTANCE IS: " + localPlayerInstance.gameObject.name);
-        localPlayerInstance.ScreenName.AssignScreenName(screenName);
-    }
-
-    private IEnumerator QueueUpScreenNameChangeReminder()
-    {
-        Debug.Log("IEnumerator");
-        yield return new WaitForSecondsRealtime(1f);
-        NotifyServerOfPlayerScreenName();
-        yield return null;
+        PlayerInstance playerInstance = joiningClientPlayerIdentity.GetComponent<PlayerInstance>();
+        playerInstance.ScreenName.AssignScreenName(screenName);
     }
 
     private bool ScreenNameIsValid(string input)

@@ -8,7 +8,7 @@ public static class CollectionExtensions
     /// Based on a Fisher-Yates shuffle, relying on Random.Range().
     /// So it's fast but not actually particularly random (but good enough for most uses).
     /// </summary>
-    public static void Shuffle<T> (this IList<T> list)
+    public static void Shuffle<T>(this IList<T> list)
     {
         int n = list.Count;
         while(n > 1)

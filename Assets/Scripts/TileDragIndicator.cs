@@ -48,6 +48,4 @@ public class TileDragIndicator : MonoBehaviour
         meshRenderer.gameObject.SetActive(false);
     }
 
-
-
 }

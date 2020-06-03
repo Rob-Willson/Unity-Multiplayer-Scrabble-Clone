@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
 
 public class UI_TileBag : NetworkBehaviour
@@ -8,8 +6,6 @@ public class UI_TileBag : NetworkBehaviour
     [Client]
     public void UICallback_Shuffle ()
     {
-        //TileBag.instance.CmdRequestShuffleTilesInBag();
-
         PlayerInstance localPlayerInstance = PlayerManager.instance.GetLocalPlayerInstance();
         if(localPlayerInstance == null)
         {
@@ -17,10 +13,7 @@ public class UI_TileBag : NetworkBehaviour
             return;
         }
 
-        Debug.Log("LOCAL PLAYER INSTANCE IS: " + localPlayerInstance.gameObject.name);
-
         localPlayerInstance.CmdRequestTileBagShuffle();
-
     }
 
 }

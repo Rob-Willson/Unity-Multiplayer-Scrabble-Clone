@@ -85,15 +85,11 @@ public class PlayerInput : NetworkBehaviour
             Vector3 mousePositionInWorld = GetMouseWorldCoordinate();
             TileDragOngoing?.Invoke(mousePositionInWorld);
         }
-
     }
-
 
     [Command]
     private void CmdPickUpTile (NetworkIdentity tileNetworkIdentity)
     {
-        Debug.Log("CmdPickUpTile: " + tileNetworkIdentity.gameObject.name);
-
         // TODO: Validate
         // ...
 
@@ -103,8 +99,6 @@ public class PlayerInput : NetworkBehaviour
     [TargetRpc]
     private void TargetDoPickUpTile(NetworkConnection connectionToTargetClient, NetworkIdentity tileNetworkIdentity)
     {
-        Debug.Log("TargetDoPickUpTile: " + tileNetworkIdentity.gameObject.name);
-
         Tile tile = tileNetworkIdentity.GetComponent<Tile>();
         if(tile == null)
         {
@@ -118,7 +112,6 @@ public class PlayerInput : NetworkBehaviour
     [Client]
     private void RequestDropTile ()
     {
-        Debug.Log("RequestDropTile");
         Vector3 dropPosition = GetMouseWorldCoordinate();
         Vector3Int dropPositionSnapped = new Vector3Int(Mathf.RoundToInt(dropPosition.x), 0, Mathf.RoundToInt(dropPosition.z));
 
@@ -128,8 +121,6 @@ public class PlayerInput : NetworkBehaviour
     [Command]
     private void CmdDropTile (NetworkIdentity tileNetworkIdentity, Vector3Int requestedDropPosition)
     {
-        Debug.Log("CmdDropTile: " + tileNetworkIdentity.gameObject.name);
-
         // TODO: Validate
         // ...
 
@@ -164,6 +155,5 @@ public class PlayerInput : NetworkBehaviour
         Vector3 screenPositionInWorld = ray.GetPoint(distanceToDrawPlane);
         return screenPositionInWorld;
     }
-
 
 }

@@ -5,27 +5,12 @@ using System;
 
 public class TileBag : NetworkBehaviour
 {
-    public static TileBag instance = null;
-
-    private void Awake()
-    {
-        if(instance != null)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            instance = this;
-        }
-    }
-
+    // TODO: This should be synced using a SyncVarList
     [SerializeField] private List<Tile> tilesInBag = new List<Tile>();
 
     public override void OnStartServer()
     {
         base.OnStartServer();
-
-        Debug.Log("OnStartServer");
 
         GenerateAllLetterTiles();
         ShuffleTilesInBag();
@@ -36,29 +21,30 @@ public class TileBag : NetworkBehaviour
     {
         base.OnStartClient();
 
-        Debug.Log("OnStartClient");
         CmdDisplayTiles();
     }
 
-    //public void Deal(int requiredTileCount)
-    //{
-    //    ShuffleTilesInBag();
-    //    List<Tile> tilesToDeal = new List<Tile>();
+    [Server]
+    public void Deal(int requiredTileCount)
+    {
+        ShuffleTilesInBag();
+        List<Tile> tilesToDeal = new List<Tile>();
+    
+        for(int i = 0; i < requiredTileCount; i++)
+        {
+            if(GetTileFromBag(out Tile tile))
+            {
+                tilesToDeal.Add(tile);
+            }
+            else
+            {
+                Debug.Log("No more tiles in bag");
+                continue;
+            }
+        }
+    }
 
-    //    for(int i = 0; i < requiredTileCount; i++)
-    //    {
-    //        if(GetTileFromBag(out Tile tile))
-    //        {
-    //            tilesToDeal.Add(tile);
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("No more tiles in bag");
-    //            continue;
-    //        }
-    //    }
-    //}
-
+    [Server]
     private bool GetTileFromBag(out Tile tile)
     {
         if(tilesInBag.Count == 0)
@@ -100,6 +86,7 @@ public class TileBag : NetworkBehaviour
         }
     }
 
+    [Server]
     private List<Tuple<char, int>> GetRequiredLetterCounts()
     {
         var requiredLetterCounts = new List<Tuple<char, int>>();
@@ -132,23 +119,10 @@ public class TileBag : NetworkBehaviour
         return requiredLetterCounts;
     }
 
-    [Command]
-    public void CmdRequestShuffleTilesInBag ()
-    {
-        Debug.Log("Request shuffle tiles in bag");
-        ShuffleTilesInBag();
-    }
-
+    [Server]
     public void ShuffleTilesInBag()
     {
-        Debug.Log("Shuffling tile bag... SERVER");
         tilesInBag.Shuffle();
-
-        foreach(var tile in tilesInBag)
-        {
-            tile.RpcSetTileText();
-        }
-
         RpcDisplayAllTilesInBag();
     }
 
@@ -177,7 +151,6 @@ public class TileBag : NetworkBehaviour
                 tilesInBag[i++].transform.position = new Vector3(x - (sqrtTileCount / 2f), 0f, z - (sqrtTileCount / 2f));
             }
         }
-
     }
 
 }

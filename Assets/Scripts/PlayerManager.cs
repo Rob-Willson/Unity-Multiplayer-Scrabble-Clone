@@ -1,11 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
 public class PlayerManager : NetworkBehaviour
 {
     public static PlayerManager instance = null;
+
+    public List<PlayerInstance> allConnectedPlayers = new List<PlayerInstance>();
 
     public void Awake()
     {
@@ -18,8 +19,6 @@ public class PlayerManager : NetworkBehaviour
             instance = this;
         }
     }
-
-    public List<PlayerInstance> allConnectedPlayers = new List<PlayerInstance>();
 
     [Server]
     public void PromptClientGetAllExistingPlayerInstances ()

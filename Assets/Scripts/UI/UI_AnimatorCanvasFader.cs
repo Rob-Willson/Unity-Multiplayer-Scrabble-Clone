@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public enum FadeType { None, FadeIn, FadeOut, FadeInThenOut }
