@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Mirror;
 
 public class PlayerScreenName : NetworkBehaviour
 {
-    //[SyncVar(hook = nameof(NotifyOfScreenNameChange))]
+    public static Action PlayerScreenNameChange;
+
+    [SyncVar(hook = nameof(NotifyOfScreenNameChange))]
     [SerializeField] public string screenName;
 
     [Client]
@@ -11,33 +14,22 @@ public class PlayerScreenName : NetworkBehaviour
     {
         if(!hasAuthority)
         {
-            Debug.Log("out");
             return;
         }
 
-        Debug.Log("AssignScreenName : '" + newScreenName + "'");
         CmdSubmitScreenName(newScreenName);
     }
 
     [Command]
     public void CmdSubmitScreenName(string newScreenName)
     {
-        Debug.Log("Command done... " + newScreenName);
-        ProcessScreenNameChange(newScreenName);
+        screenName = newScreenName;
     }
 
-    [Server]
-    private void ProcessScreenNameChange(string newScreenName)
+    private void NotifyOfScreenNameChange (string oldValue, string newValue)
     {
-        Debug.Log("Processing..." + newScreenName); 
-        RpcNotifyAllClientsOfChangedName(newScreenName);
+        PlayerScreenNameChange?.Invoke();
     }
 
-    [ClientRpc]
-    private void RpcNotifyAllClientsOfChangedName(string newScreenName)
-    {
-        this.screenName = newScreenName;
-        Debug.Log("RPC reply notifying of screen name change to: '" + newScreenName + "'...");
-    }
 
 }

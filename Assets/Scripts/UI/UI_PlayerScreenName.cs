@@ -1,45 +1,42 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using Mirror;
 
 public class UI_PlayerScreenName : MonoBehaviour
 {
     [SerializeField] private TMP_InputField screenNameInputField = null;
+    [SerializeField] private Image screenNameBorder = null;
     [SerializeField] private string screenName;
 
     private void OnEnable()
     {
-        NetworkManagerJumble.ClientJoinedServer += NotifyServerOfPlayerScreenName;
         screenNameInputField.onValueChanged.AddListener(delegate { SubmitScreenName(); });
         screenNameInputField.onEndEdit.AddListener(delegate { SubmitScreenName(); });
         screenNameInputField.onSubmit.AddListener(delegate { SubmitScreenName(); });
+        PlayerInstance.RequestingScreenName += NotifyServerOfPlayerScreenName;
     }
     private void OnDisable()
     {
-        NetworkManagerJumble.ClientJoinedServer -= NotifyServerOfPlayerScreenName;
         screenNameInputField.onValueChanged.RemoveListener(delegate { SubmitScreenName(); });
         screenNameInputField.onEndEdit.RemoveListener(delegate { SubmitScreenName(); });
         screenNameInputField.onSubmit.RemoveListener(delegate { SubmitScreenName(); });
+        PlayerInstance.RequestingScreenName -= NotifyServerOfPlayerScreenName;
     }
 
-    private void SubmitScreenName ()
+    public bool CheckScreenNameSubmitted ()
     {
-        string newScreenName = screenNameInputField.text;
-        if(!ScreenNameIsValid(newScreenName))
+        if(IsValidScreenName(screenName))
         {
-            Debug.LogError("Screen name not valid in 'UICallback'");
-            return;
+            return true;
         }
-        screenName = newScreenName;
+        screenNameBorder.color = Color.red;
+        return false;
     }
 
-    public void NotifyServerOfPlayerScreenName(NetworkIdentity joiningClientPlayerIdentity)
-    {
-        PlayerInstance playerInstance = joiningClientPlayerIdentity.GetComponent<PlayerInstance>();
-        playerInstance.ScreenName.AssignScreenName(screenName);
-    }
-
-    private bool ScreenNameIsValid(string input)
+    private bool IsValidScreenName(string input)
     {
         if(string.IsNullOrWhiteSpace(input))
         {
@@ -47,4 +44,29 @@ public class UI_PlayerScreenName : MonoBehaviour
         }
         return true;
     }
+
+    private void SubmitScreenName ()
+    {
+        string newScreenName = screenNameInputField.text;
+        if(!IsValidScreenName(newScreenName))
+        {
+            screenNameBorder.color = Color.red;
+            return;
+        }
+        if(newScreenName == screenName)
+        {
+            return;
+        }
+        screenNameBorder.color = new Color32(255, 255, 255, 200);
+        screenName = newScreenName;
+    }
+
+    private void NotifyServerOfPlayerScreenName(NetworkIdentity joiningClientPlayerIdentity)
+    {
+        Debug.Log("NotifyServerOfPlayerScreenName " + joiningClientPlayerIdentity);
+
+        PlayerInstance playerInstance = joiningClientPlayerIdentity.GetComponent<PlayerInstance>();
+        playerInstance.ScreenName.AssignScreenName(screenName);
+    }
+
 }

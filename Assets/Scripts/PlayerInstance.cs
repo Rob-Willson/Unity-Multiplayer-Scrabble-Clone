@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerScreenName))]
 public class PlayerInstance : NetworkBehaviour
 {
+    public static Action<NetworkIdentity> RequestingScreenName;
+
     private PlayerScore score;
     public PlayerScore Score
     {
@@ -61,6 +63,19 @@ public class PlayerInstance : NetworkBehaviour
 
         TileBag tileBag = FindObjectOfType<TileBag>();
         tileBag.ShuffleTilesInBag();
+    }
+
+    [TargetRpc]
+    public void TargetRequestScreenName (NetworkConnection target)
+    {
+        Debug.Log("TargetRequestScreenName");
+
+        if(!string.IsNullOrWhiteSpace(ScreenName.screenName))
+        {
+            Debug.LogError("ScreenName has already been set on PlayerInstance requesting screen name: " + this.gameObject.name);
+            return;
+        }
+        RequestingScreenName?.Invoke(this.netIdentity);
     }
 
 }

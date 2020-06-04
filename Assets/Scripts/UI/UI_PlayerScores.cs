@@ -11,16 +11,13 @@ public class UI_PlayerScores : NetworkBehaviour
     {
         NetworkManagerJumble.ClientJoinedServer += UpdatePlayerScores;
         PlayerScore.PlayerScoreChange += UpdatePlayerScores;
+        PlayerScreenName.PlayerScreenNameChange += UpdatePlayerScores;
     }
     private void OnDisable()
     {
         NetworkManagerJumble.ClientJoinedServer -= UpdatePlayerScores;
         PlayerScore.PlayerScoreChange -= UpdatePlayerScores;
-    }
-
-    private void UpdatePlayerScores(NetworkIdentity joiningClientPlayerIdentity)
-    {
-        UpdatePlayerScores();
+        PlayerScreenName.PlayerScreenNameChange -= UpdatePlayerScores;
     }
 
     private void UpdatePlayerScores()
@@ -29,7 +26,7 @@ public class UI_PlayerScores : NetworkBehaviour
         {
             if(i >= PlayerManager.instance.allConnectedPlayers.Count)
             {
-                allPlayerScoreTexts[i].gameObject.SetActive(false);
+                allPlayerScoreTexts[i].transform.parent.gameObject.SetActive(false);
                 continue;
             }
 
@@ -37,12 +34,12 @@ public class UI_PlayerScores : NetworkBehaviour
             if(playerInstance == null)
             {
                 Debug.Log("PlayerInstance could not be found on connection. Bug?");
-                allPlayerScoreTexts[i].gameObject.SetActive(false);
+                allPlayerScoreTexts[i].transform.parent.gameObject.SetActive(false);
                 continue;
             }
 
-            allPlayerScoreTexts[i].SetText(playerInstance.ScreenName.screenName + "[" + i + "]: " + playerInstance.Score.score);
-            allPlayerScoreTexts[i].gameObject.SetActive(true);
+            allPlayerScoreTexts[i].SetText(playerInstance.ScreenName.screenName + " :  " + playerInstance.Score.score);
+            allPlayerScoreTexts[i].transform.parent.gameObject.SetActive(true);
         }
     }
 

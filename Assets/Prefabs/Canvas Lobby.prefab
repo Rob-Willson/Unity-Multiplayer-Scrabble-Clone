@@ -183,7 +183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1170,8 +1170,8 @@ RectTransform:
   m_Children:
   - {fileID: 2044975707668187342}
   - {fileID: 2044975708567560371}
-  - {fileID: 3399232392601368814}
   - {fileID: 2096900318018883868}
+  - {fileID: 3399232392601368814}
   - {fileID: 1604184510885723574}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -3104,12 +3104,12 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_NormalColor: {r: 0, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
+    m_PressedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    m_SelectedColor: {r: 0, g: 0, b: 0, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -3125,7 +3125,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 5957496788180640227}
   m_TextViewport: {fileID: 5665637907648301168}
   m_TextComponent: {fileID: 2173584177208938710}
   m_Placeholder: {fileID: 1029785051630629396}
@@ -3225,7 +3225,7 @@ RectTransform:
   - {fileID: 2532316471245619829}
   - {fileID: 6398652099569054689}
   m_Father: {fileID: 2044975707424556201}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -3291,6 +3291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetServerIPInputField: {fileID: 4877798605388974480}
+  playerScreenNameComponent: {fileID: 381907659831512378}
 --- !u!114 &4755567566001050750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4418,7 +4419,7 @@ RectTransform:
   m_Children:
   - {fileID: 1272101192530831826}
   m_Father: {fileID: 2044975707424556201}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -4438,6 +4439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screenNameInputField: {fileID: 6034794162116738765}
+  screenNameBorder: {fileID: 2182778117699747362}
   screenName: 
 --- !u!114 &3772042594832842512
 MonoBehaviour:
@@ -5226,6 +5228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51140cd48b07abb44bfa492c6696d739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerScreenNameComponent: {fileID: 381907659831512378}
 --- !u!114 &8761082397182478685
 MonoBehaviour:
   m_ObjectHideFlags: 0
