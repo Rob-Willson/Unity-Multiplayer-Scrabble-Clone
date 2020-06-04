@@ -7,8 +7,9 @@ public class NetworkManagerJumble : NetworkManager
 {
     public static NetworkManagerJumble instance = null;
 
-    public static Action<NetworkIdentity> ClientJoinedServer;
+    public static Action ClientJoinedServer;
     public static Action ClientLeftServer;
+    public static Action<PlayerInstance> PlayerInstanceSpawned;
 
     public override void Awake()
     {
@@ -29,14 +30,23 @@ public class NetworkManagerJumble : NetworkManager
 
         Debug.Log("OnServerAddPlayer: " + connection.identity);
         PlayerManager.instance.PromptClientGetAllExistingPlayerInstances();
+
+        PlayerInstance newPlayerInstance = connection.identity.GetComponent<PlayerInstance>();
+        if(newPlayerInstance == null)
+        {
+            Debug.LogError("FAIL: Added PlayerInstance of newly added Player was null.");
+            return;
+        }
+
+        newPlayerInstance.TargetRequestScreenName(connection.identity.connectionToClient);
     }
 
     public override void OnClientConnect(NetworkConnection connection)
     {
         base.OnClientConnect(connection);
 
-        Debug.Log("OnClientConnect: " + connection.identity);
-        ClientJoinedServer?.Invoke(connection.identity);
+        Debug.Log("OnClientConnect: " + connection);
+        ClientJoinedServer?.Invoke();
     }
 
     public override void OnServerDisconnect(NetworkConnection connection)
@@ -49,7 +59,7 @@ public class NetworkManagerJumble : NetworkManager
 
     // HACK: Not a big fan of the use of magic strings here
     // Consider a cleaner alternative...
-    public GameObject FindRegisteredPrefabByName (string name)
+    public GameObject FindRegisteredPrefabByName(string name)
     {
         GameObject prefabObj = spawnPrefabs.Find(prefab => prefab.name == name);
         return prefabObj;
