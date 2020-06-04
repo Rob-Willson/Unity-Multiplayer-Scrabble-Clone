@@ -48,7 +48,7 @@ public class Tile : NetworkBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
     [Server]
-    private void Flip ()
+    public void Flip ()
     {
         meshRenderer.transform.Rotate(new Vector3(0, 0, 1), 180);
     }

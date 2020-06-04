@@ -7,19 +7,6 @@ public class PlayerInput : NetworkBehaviour
     public static Action<Vector3> TileDragOngoing;
     public static Action TileDragEnd;
 
-    private Camera mainCamera = null;
-    private Camera MainCamera
-    {
-        get
-        {
-            if(mainCamera == null)
-            {
-                mainCamera = Camera.main;
-            }
-            return mainCamera;
-        }
-    }
-
     [SerializeField] private Tile currentlySelectedTile;
     private bool hasTile
     {
@@ -55,16 +42,11 @@ public class PlayerInput : NetworkBehaviour
                 return;
             }
 
-            if(Physics.Raycast(MainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 100))
+            Tile tileUnderPointer = GetTileUnderPointer();
+            if(tileUnderPointer != null)
             {
-                Tile hitTile = hit.collider.gameObject.GetComponent<Tile>();
-                if(hitTile == null)
-                {
-                    return;
-                }
-                CmdPickUpTile(hitTile.netIdentity);
+                CmdPickUpTile(tileUnderPointer.netIdentity);
             }
-
         }
 
         if(Input.GetKeyUp(KeyCode.Mouse0))
@@ -82,9 +64,29 @@ public class PlayerInput : NetworkBehaviour
                 return;
             }
 
-            Vector3 mousePositionInWorld = GetMouseWorldCoordinate();
+            Vector3 mousePositionInWorld = CameraCalculations.GetMouseWorldCoordinate();
             TileDragOngoing?.Invoke(mousePositionInWorld);
         }
+
+        if(Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            Tile tileUnderPointer = GetTileUnderPointer();
+            if(tileUnderPointer != null)
+            {
+                CmdFlipTile(tileUnderPointer.netIdentity);
+            }
+        }
+    }
+
+    [Client]
+    private Tile GetTileUnderPointer ()
+    {
+        if(Physics.Raycast(CameraCalculations.MainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 100))
+        {
+            Tile hitTile = hit.collider.gameObject.GetComponent<Tile>();
+            return hitTile;
+        }
+        return null;
     }
 
     [Command]
@@ -112,7 +114,7 @@ public class PlayerInput : NetworkBehaviour
     [Client]
     private void RequestDropTile ()
     {
-        Vector3 dropPosition = GetMouseWorldCoordinate();
+        Vector3 dropPosition = CameraCalculations.GetMouseWorldCoordinate();
         Vector3Int dropPositionSnapped = new Vector3Int(Mathf.RoundToInt(dropPosition.x), 0, Mathf.RoundToInt(dropPosition.z));
 
         CmdDropTile(currentlySelectedTile.netIdentity, dropPositionSnapped);
@@ -135,25 +137,22 @@ public class PlayerInput : NetworkBehaviour
         TileDragEnd?.Invoke();
     }
 
-    /// <summary>
-    /// Raycast down from camera through the mouse position, returning the coordinate on the floor plane.
-    /// </summary>
-    [Client]
-    private Vector3 GetMouseWorldCoordinate ()
+    [Command]
+    private void CmdFlipTile (NetworkIdentity tileNetworkIdentity)
     {
-        return GetWorldCoordinateFromScreenPosition(Input.mousePosition);
+        // TODO: Validate
+        // ...
+
+        Tile tile = tileNetworkIdentity.GetComponent<Tile>();
+        if(tile == null)
+        {
+            Debug.LogError("FAIL: Tile component not found on passed NetworkIdentity.");
+            return;
+        }
+
+        tile.Flip();
     }
 
-    /// <summary>
-    /// Raycast down from camera through a given position in the screen, returning the coordinate on the floor plane.
-    /// </summary>
-    [Client]
-    private Vector3 GetWorldCoordinateFromScreenPosition (Vector2 screenPosition)
-    {
-        Ray ray = MainCamera.ScreenPointToRay(screenPosition);
-        float distanceToDrawPlane = (0f - ray.origin.y) / ray.direction.y;
-        Vector3 screenPositionInWorld = ray.GetPoint(distanceToDrawPlane);
-        return screenPositionInWorld;
-    }
+
 
 }
