@@ -103,7 +103,7 @@ public class UI_AnimatorSlide : MonoBehaviour, IUserInterfaceInteractionCompanio
     public void SlideToStart ()
     {
         if(slideAnimationCoroutine != null) StopCoroutine(slideAnimationCoroutine);
-        slideAnimationCoroutine = StartCoroutine(AnimateSlide(startAnchoredPos));
+        slideAnimationCoroutine = StartCoroutine(AnimateSlide(startAnchoredPos + animateMoveVector));
     }
 
     public void SlideEndToStart ()
