@@ -2,22 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Mirror;
 
-public class WordDictionary : MonoBehaviour
+public class WordDictionary : NetworkBehaviour
 {
     private Dictionary<char, Dictionary<string, string>> dictionariesByLetter = new Dictionary<char, Dictionary<string, string>>();
 
-    private void Start ()
+    public override void OnStartServer()
     {
-        LoadWordsFromFile();
+        base.OnStartServer();
 
-        Debug.Log("temperature: " + IsWordInDictionary("temperature"));
-        Debug.Log("zebra: " + IsWordInDictionary("zebra"));
-        Debug.Log("Alphabet: " + IsWordInDictionary("Alphabet"));
-        Debug.Log("ksdkfk: " + IsWordInDictionary("ksdkfk"));
-        Debug.Log("1234: " + IsWordInDictionary("1234"));
+        LoadWordsFromFile();
     }
 
+    [Server]
     private void LoadWordsFromFile ()
     {
         FileInfo fileInfo = new FileInfo(Path.Combine(Application.streamingAssetsPath, "WordsWithDefinitions.json"));
@@ -53,7 +51,8 @@ public class WordDictionary : MonoBehaviour
         }
     }
 
-    public bool IsWordInDictionary (string wordToCheck)
+    [Server]
+    private bool IsWordInDictionary (string wordToCheck)
     {
         wordToCheck = wordToCheck.ToLower();
 
@@ -73,6 +72,7 @@ public class WordDictionary : MonoBehaviour
         return dictionary.ContainsKey(wordToCheck);
     }
 
+    [Server]
     private Dictionary<string, string> GetDictionaryFromLetter (char letter)
     {
         if(dictionariesByLetter.TryGetValue(letter, out Dictionary<string, string> dictionaryOfLetter))

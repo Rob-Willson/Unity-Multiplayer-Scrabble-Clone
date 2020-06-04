@@ -10,13 +10,19 @@ public class UI_PlayerScreenName : MonoBehaviour
     private void OnEnable()
     {
         NetworkManagerJumble.ClientJoinedServer += NotifyServerOfPlayerScreenName;
+        screenNameInputField.onValueChanged.AddListener(delegate { SubmitScreenName(); });
+        screenNameInputField.onEndEdit.AddListener(delegate { SubmitScreenName(); });
+        screenNameInputField.onSubmit.AddListener(delegate { SubmitScreenName(); });
     }
     private void OnDisable()
     {
         NetworkManagerJumble.ClientJoinedServer -= NotifyServerOfPlayerScreenName;
+        screenNameInputField.onValueChanged.RemoveListener(delegate { SubmitScreenName(); });
+        screenNameInputField.onEndEdit.RemoveListener(delegate { SubmitScreenName(); });
+        screenNameInputField.onSubmit.RemoveListener(delegate { SubmitScreenName(); });
     }
 
-    public void UICallback_SubmitScreenName ()
+    private void SubmitScreenName ()
     {
         string newScreenName = screenNameInputField.text;
         if(!ScreenNameIsValid(newScreenName))
