@@ -13,6 +13,7 @@ public class Tile : NetworkBehaviour, IPointerEnterHandler, IPointerExitHandler
     private MaterialRecolourer materialRecolourer = new MaterialRecolourer();
 
     [SerializeField] private MeshRenderer meshRenderer = null;
+    [SerializeField] private Collider boxCollider = null;
     [SerializeField] private TextMeshProUGUI letterText = null;
     [SerializeField] private TextMeshProUGUI valueText = null;
 
@@ -42,14 +43,40 @@ public class Tile : NetworkBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
     [Server]
-    private void SetColor (Color oldColor, Color newColor)
+    private void SetColor(Color oldColor, Color newColor)
     {
         color = newColor;
     }
 
     [Server]
-    public void Flip ()
+    public void Flip()
     {
         meshRenderer.transform.Rotate(new Vector3(0, 0, 1), 180);
     }
+
+    [Server]
+    public void ServerForceVisiblity(bool visible)
+    {
+        RpcMakeVisible(visible);
+    }
+
+    [ClientRpc]
+    public void RpcMakeVisible(bool visible)
+    {
+        MakeVisible(visible);
+    }
+
+    [TargetRpc]
+    public void TargetMakeVisible(NetworkConnection connection, bool visible)
+    {
+        MakeVisible(visible);
+    }
+
+    [Client]
+    private void MakeVisible(bool visible)
+    {
+        meshRenderer.gameObject.SetActive(visible);
+        boxCollider.enabled = visible;
+    }
+
 }
