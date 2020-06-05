@@ -30,12 +30,10 @@ public class PlayerInput : NetworkBehaviour
     }
 
     [Client]
-    private void LocalClientUpdate ()
+    private void LocalClientUpdate()
     {
         if(Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Debug.Log("Mouse0 down");
-
             if(hasTile)
             {
                 Debug.LogError("Already had tile picked up but trying to mouse down. Why wasn't tile dropped?");
@@ -54,6 +52,7 @@ public class PlayerInput : NetworkBehaviour
             if(hasTile)
             {
                 RequestDropTile();
+                TileDragEnd?.Invoke();
             }
         }
 
@@ -79,18 +78,18 @@ public class PlayerInput : NetworkBehaviour
     }
 
     [Client]
-    private Tile GetTileUnderPointer ()
+    private Tile GetTileUnderPointer()
     {
+        Tile hitTile = null;
         if(Physics.Raycast(CameraCalculations.MainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 100))
         {
-            Tile hitTile = hit.collider.gameObject.GetComponent<Tile>();
-            return hitTile;
+            hitTile = hit.collider.gameObject.GetComponent<Tile>();
         }
-        return null;
+        return hitTile;
     }
 
     [Command]
-    private void CmdPickUpTile (NetworkIdentity tileNetworkIdentity)
+    private void CmdPickUpTile(NetworkIdentity tileNetworkIdentity)
     {
         // TODO: Validate
         // ...
@@ -104,7 +103,7 @@ public class PlayerInput : NetworkBehaviour
         Tile tile = tileNetworkIdentity.GetComponent<Tile>();
         if(tile == null)
         {
-            Debug.LogError("FAIL: Tile component wasn't found on passed NetworkIdentity.");
+            Debug.LogError("FAIL: Tile component wasn't found on passed NetworkIdentity. ");
             return;
         }
 
@@ -112,33 +111,69 @@ public class PlayerInput : NetworkBehaviour
     }
 
     [Client]
-    private void RequestDropTile ()
+    private void RequestDropTile()
     {
         Vector3 dropPosition = CameraCalculations.GetMouseWorldCoordinate();
         Vector3Int dropPositionSnapped = new Vector3Int(Mathf.RoundToInt(dropPosition.x), 0, Mathf.RoundToInt(dropPosition.z));
 
-        CmdDropTile(currentlySelectedTile.netIdentity, dropPositionSnapped);
+        // Reject placement if there is a tile already under the pointer
+        if(GetTileUnderPointer() != null)
+        {
+            DropCurrentlySelectedTile();
+            return;
+        }
+
+        CmdDropTile(base.netIdentity, currentlySelectedTile.netIdentity, dropPositionSnapped);
     }
 
     [Command]
-    private void CmdDropTile (NetworkIdentity tileNetworkIdentity, Vector3Int requestedDropPosition)
+    private void CmdDropTile(NetworkIdentity requestingClientIdentity, NetworkIdentity tileNetworkIdentity, Vector3Int requestedDropPosition)
     {
-        // TODO: Validate
-        // ...
+        bool droppedOnBoard = false;
+
+        if(Physics.Raycast(requestedDropPosition + new Vector3(0, 5, 0), Vector3.down, out RaycastHit hit, 10f))
+        {
+            Tile hitTile = hit.collider.gameObject.GetComponent<Tile>();
+            if(hitTile != null)
+            {
+                Debug.Log("  square already has a tile on it: " + hitTile.name);
+                return;
+            }
+
+            Board hitBoard = hit.collider.gameObject.GetComponent<Board>();
+            if(hitBoard == null)
+            {
+                droppedOnBoard = false;
+            }
+            else
+            {
+                droppedOnBoard = true;
+            }
+        }
+
+        Tile tile = tileNetworkIdentity.GetComponent<Tile>();
+        tile.RpcMakeVisible(droppedOnBoard);
+        tile.TargetMakeVisible(requestingClientIdentity.connectionToClient, true);
 
         tileNetworkIdentity.transform.localPosition = requestedDropPosition;
-        TargetDoDropTile(base.connectionToClient);
+
+        TargetDoDropTile(requestingClientIdentity.connectionToClient);
     }
 
     [TargetRpc]
     private void TargetDoDropTile(NetworkConnection connectionToTargetClient)
     {
+        DropCurrentlySelectedTile();
+    }
+
+    [Client]
+    private void DropCurrentlySelectedTile ()
+    {
         currentlySelectedTile = null;
-        TileDragEnd?.Invoke();
     }
 
     [Command]
-    private void CmdFlipTile (NetworkIdentity tileNetworkIdentity)
+    private void CmdFlipTile(NetworkIdentity tileNetworkIdentity)
     {
         // TODO: Validate
         // ...

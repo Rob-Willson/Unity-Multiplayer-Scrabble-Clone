@@ -25,7 +25,7 @@ public class TileBag : NetworkBehaviour
     }
 
     [Server]
-    public void Deal(int requiredTileCount)
+    public List<Tile> Deal(int requiredTileCount)
     {
         ShuffleTilesInBag();
         List<Tile> tilesToDeal = new List<Tile>();
@@ -42,6 +42,8 @@ public class TileBag : NetworkBehaviour
                 continue;
             }
         }
+
+        return tilesToDeal;
     }
 
     [Server]
@@ -124,6 +126,11 @@ public class TileBag : NetworkBehaviour
     {
         tilesInBag.Shuffle();
         RpcDisplayAllTilesInBag();
+
+        foreach(var tile in tilesInBag)
+        {
+            tile.ServerForceVisiblity(true);
+        }
     }
 
     [Command]
@@ -148,7 +155,8 @@ public class TileBag : NetworkBehaviour
                     return;
                 }
 
-                tilesInBag[i++].transform.position = new Vector3(x - (sqrtTileCount / 2f), 0f, z - (sqrtTileCount / 2f));
+                tilesInBag[i].transform.position = new Vector3(x - (sqrtTileCount / 2f), 0f, z - (sqrtTileCount / 2f));
+                i++;
             }
         }
     }

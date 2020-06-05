@@ -68,6 +68,7 @@ MonoBehaviour:
     value: 0
   color: {r: 0, g: 0, b: 0, a: 0}
   meshRenderer: {fileID: 6986959254112088019}
+  boxCollider: {fileID: 2000440429499656905}
   letterText: {fileID: 2000440430248148577}
   valueText: {fileID: 2000440429635425254}
 --- !u!114 &-3699644859294380835
