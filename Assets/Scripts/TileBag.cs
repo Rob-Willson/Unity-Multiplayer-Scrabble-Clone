@@ -92,32 +92,33 @@ public class TileBag : NetworkBehaviour
     private List<Tuple<char, int>> GetRequiredLetterCounts()
     {
         var requiredLetterCounts = new List<Tuple<char, int>>();
-        requiredLetterCounts.Add(new Tuple<char, int>('A', 9));
-        requiredLetterCounts.Add(new Tuple<char, int>('B', 2));
-        requiredLetterCounts.Add(new Tuple<char, int>('C', 2));
-        requiredLetterCounts.Add(new Tuple<char, int>('D', 4));
-        requiredLetterCounts.Add(new Tuple<char, int>('E', 12));
-        requiredLetterCounts.Add(new Tuple<char, int>('F', 2));
-        requiredLetterCounts.Add(new Tuple<char, int>('G', 3));
-        requiredLetterCounts.Add(new Tuple<char, int>('H', 2));
-        requiredLetterCounts.Add(new Tuple<char, int>('I', 9));
-        requiredLetterCounts.Add(new Tuple<char, int>('J', 1));
-        requiredLetterCounts.Add(new Tuple<char, int>('K', 1));
-        requiredLetterCounts.Add(new Tuple<char, int>('L', 4));
-        requiredLetterCounts.Add(new Tuple<char, int>('M', 2));
-        requiredLetterCounts.Add(new Tuple<char, int>('N', 6));
-        requiredLetterCounts.Add(new Tuple<char, int>('O', 8));
-        requiredLetterCounts.Add(new Tuple<char, int>('P', 2));
-        requiredLetterCounts.Add(new Tuple<char, int>('Q', 1));
-        requiredLetterCounts.Add(new Tuple<char, int>('R', 6));
-        requiredLetterCounts.Add(new Tuple<char, int>('S', 4));
-        requiredLetterCounts.Add(new Tuple<char, int>('T', 6));
-        requiredLetterCounts.Add(new Tuple<char, int>('U', 4));
-        requiredLetterCounts.Add(new Tuple<char, int>('V', 2));
-        requiredLetterCounts.Add(new Tuple<char, int>('W', 2));
-        requiredLetterCounts.Add(new Tuple<char, int>('X', 1));
-        requiredLetterCounts.Add(new Tuple<char, int>('Y', 2));
-        requiredLetterCounts.Add(new Tuple<char, int>('Z', 1));
+        requiredLetterCounts.Add(new Tuple<char, int>('A', 9 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('B', 2 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('C', 2 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('D', 4 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('E', 1 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('F', 2 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('G', 3 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('H', 2 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('I', 9 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('J', 1 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('K', 1 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('L', 4 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('M', 2 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('N', 6 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('O', 8 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('P', 2 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('Q', 1 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('R', 6 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('S', 4 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('T', 6 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('U', 4 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('V', 2 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('W', 2 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('X', 1 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('Y', 2 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>('Z', 1 * 2));
+        requiredLetterCounts.Add(new Tuple<char, int>(' ', 2 * 2));
         return requiredLetterCounts;
     }
 
@@ -133,6 +134,17 @@ public class TileBag : NetworkBehaviour
         }
     }
 
+    [Server]
+    public void FlipAllTilesInBag()
+    {
+        bool flipToFaceUp = !tilesInBag[0].IsFacingUp;
+
+        foreach(var tile in tilesInBag)
+        {
+            tile.Flip(flipToFaceUp);
+        }
+    }
+
     [Command]
     public void CmdDisplayTiles ()
     {
@@ -143,7 +155,7 @@ public class TileBag : NetworkBehaviour
     private void RpcDisplayAllTilesInBag()
     {
         int tileCount = tilesInBag.Count;
-        int sqrtTileCount = Mathf.CeilToInt(Mathf.Sqrt(tileCount));
+        int sqrtTileCount = 39;
 
         int i = 0;
         for(int z = sqrtTileCount; z >= 0; z--)
@@ -155,7 +167,7 @@ public class TileBag : NetworkBehaviour
                     return;
                 }
 
-                tilesInBag[i].transform.position = new Vector3(x - (sqrtTileCount / 2f), 0f, z - (sqrtTileCount / 2f));
+                tilesInBag[i].transform.position = new Vector3(x - 19f, 0f, z - 23f);
                 i++;
             }
         }
