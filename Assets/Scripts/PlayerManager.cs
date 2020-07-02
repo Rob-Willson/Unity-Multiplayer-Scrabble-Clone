@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
@@ -6,6 +8,7 @@ public class PlayerManager : NetworkBehaviour
 {
     public static PlayerManager instance = null;
 
+    public static Action NewPlayerLoggedAsConnected;
     public List<PlayerInstance> allConnectedPlayers = new List<PlayerInstance>();
 
     public void Awake()
@@ -47,8 +50,12 @@ public class PlayerManager : NetworkBehaviour
         {
             AddPlayerInstance(instance);
         }
+        allConnectedPlayers.Sort((x, y) => string.Compare(x.ScreenName.screenName, y.ScreenName.screenName));
 
         Debug.Log("Found " + allConnectedPlayers.Count + " connected players");
+
+        StopAllCoroutines();
+        StartCoroutine(AlphabetizeAllConnectedPlayers());
     }
 
     private void AddPlayerInstance (PlayerInstance newPlayerInstance)
@@ -61,15 +68,25 @@ public class PlayerManager : NetworkBehaviour
         allConnectedPlayers.Add(newPlayerInstance);
     }
 
-    private void RemovePlayerInstance (PlayerInstance removedPlayerInstance)
+    // HACK:
+    private IEnumerator AlphabetizeAllConnectedPlayers()
     {
-        if(!allConnectedPlayers.Contains(removedPlayerInstance))
-        {
-            Debug.LogError("FAIL: Disconnected player couldn't be found in the collection of connected players.");
-            return;
-        }
-        allConnectedPlayers.Remove(removedPlayerInstance);
+        yield return new WaitForSecondsRealtime(0.1f);
+        allConnectedPlayers.Sort((x, y) => string.Compare(x.ScreenName.screenName, y.ScreenName.screenName));
+        NewPlayerLoggedAsConnected?.Invoke();
+        Debug.Log("AlphabetizeAllConnectedPlayers done");
+        yield break;
     }
+
+    //private void RemovePlayerInstance (PlayerInstance removedPlayerInstance)
+    //{
+    //    if(!allConnectedPlayers.Contains(removedPlayerInstance))
+    //    {
+    //        Debug.LogError("FAIL: Disconnected player couldn't be found in the collection of connected players.");
+    //        return;
+    //    }
+    //    allConnectedPlayers.Remove(removedPlayerInstance);
+    //}
 
     public PlayerInstance GetLocalPlayerInstance ()
     {

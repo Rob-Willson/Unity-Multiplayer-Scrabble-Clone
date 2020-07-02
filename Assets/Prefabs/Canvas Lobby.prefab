@@ -1150,6 +1150,7 @@ GameObject:
   - component: {fileID: 2044975707424556204}
   - component: {fileID: 2044975707424556200}
   - component: {fileID: 5642338851903413714}
+  - component: {fileID: 558904723}
   m_Layer: 5
   m_Name: Canvas Lobby
   m_TagString: Untagged
@@ -1290,6 +1291,18 @@ MonoBehaviour:
   fadeOutSpeed: 0
   endFadeOutLevel: 0
   deactivateAfterFade: 0
+--- !u!114 &558904723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044975707424556205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c209f621711a99349bf8a2a8e007a154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2044975707604858307
 GameObject:
   m_ObjectHideFlags: 0

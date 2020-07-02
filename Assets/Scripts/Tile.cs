@@ -17,6 +17,15 @@ public class Tile : NetworkBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] private TextMeshProUGUI letterText = null;
     [SerializeField] private TextMeshProUGUI valueText = null;
 
+    private bool faceUp = true;
+    public bool IsFacingUp
+    {
+        get
+        {
+            return faceUp;
+        }
+    }
+
     [Server]
     public void Intialize(TileData tileData)
     {
@@ -52,6 +61,16 @@ public class Tile : NetworkBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void Flip()
     {
         meshRenderer.transform.Rotate(new Vector3(0, 0, 1), 180);
+        faceUp = !faceUp;
+    }
+
+    [Server]
+    public void Flip(bool flipToFaceUp)
+    {
+        if(flipToFaceUp != faceUp)
+        {
+            Flip();
+        }
     }
 
     [Server]

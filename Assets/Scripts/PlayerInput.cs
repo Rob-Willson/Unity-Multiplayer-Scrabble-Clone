@@ -34,6 +34,8 @@ public class PlayerInput : NetworkBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Mouse0))
         {
+            Debug.Log("Mouse0 down");
+
             if(hasTile)
             {
                 Debug.LogError("Already had tile picked up but trying to mouse down. Why wasn't tile dropped?");
@@ -44,6 +46,11 @@ public class PlayerInput : NetworkBehaviour
             if(tileUnderPointer != null)
             {
                 CmdPickUpTile(tileUnderPointer.netIdentity);
+                if(Application.platform == RuntimePlatform.Android)
+                {
+                    CmdFlipTile(tileUnderPointer.netIdentity);
+                }
+
             }
         }
 
@@ -187,7 +194,5 @@ public class PlayerInput : NetworkBehaviour
 
         tile.Flip();
     }
-
-
 
 }

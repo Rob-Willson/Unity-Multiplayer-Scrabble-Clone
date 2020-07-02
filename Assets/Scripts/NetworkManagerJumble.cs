@@ -9,7 +9,6 @@ public class NetworkManagerJumble : NetworkManager
 
     public static Action ClientJoinedServer;
     public static Action ClientLeftServer;
-    public static Action<PlayerInstance> PlayerInstanceSpawned;
 
     public override void Awake()
     {

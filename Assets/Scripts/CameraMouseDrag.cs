@@ -38,12 +38,12 @@ public class CameraMouseDrag : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Mouse2))
+        if(Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Mouse2))
         {
             StartCameraDrag();
             return;
         }
-        if(Input.GetKey(KeyCode.Mouse2))
+        if(Input.GetKey(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse2))
         {
             OngoingCameraDrag();
         }

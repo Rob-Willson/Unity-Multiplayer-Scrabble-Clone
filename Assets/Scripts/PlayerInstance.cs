@@ -34,26 +34,13 @@ public class PlayerInstance : NetworkBehaviour
         }
     }
 
-    [Client]
-    private void Update()
-    {
-        if(!hasAuthority)
-        {
-            return;
-        }
-
-        if(Input.anyKeyDown)
-        {
-            CmdAddToScore(1);
-        }
-    }
-
     [Command]
-    public void CmdAddToScore (int count)
+    public void CmdAddToScore (int amount)
     {
         // TODO: Validate...
+        Debug.Log("SERVER AddToScore");
 
-        Score.AddToScore(count);
+        Score.AddToScore(amount);
     }
 
     [Command]
@@ -76,6 +63,13 @@ public class PlayerInstance : NetworkBehaviour
             return;
         }
         RequestingScreenName?.Invoke(this.netIdentity);
+    }
+
+    [Command]
+    public void CmdRequestFlipAllTiles ()
+    {
+        TileBag tileBag = FindObjectOfType<TileBag>();
+        tileBag.FlipAllTilesInBag();
     }
 
 }
