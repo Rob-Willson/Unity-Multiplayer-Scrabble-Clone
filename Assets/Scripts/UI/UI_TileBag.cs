@@ -16,4 +16,17 @@ public class UI_TileBag : NetworkBehaviour
         localPlayerInstance.CmdRequestTileBagShuffle();
     }
 
+    [Client]
+    public void UICallback_FlipAll ()
+    {
+        PlayerInstance localPlayerInstance = PlayerManager.instance.GetLocalPlayerInstance();
+        if(localPlayerInstance == null)
+        {
+            Debug.LogError("FAIL: No local PlayerInstance found.");
+            return;
+        }
+
+        localPlayerInstance.CmdRequestFlipAllTiles();
+    }
+
 }
