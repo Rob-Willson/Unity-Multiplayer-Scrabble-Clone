@@ -12,7 +12,7 @@ public class WordDictionary : NetworkBehaviour
     {
         base.OnStartServer();
 
-        LoadWordsFromFile();
+        //LoadWordsFromFile();
     }
 
     [Server]
